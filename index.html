@@ -27,9 +27,27 @@
             const Qr_mazut = 40.40;
             const Qr_gas = 33.08;
             
-            const k_tw_coal = 150;
-            const k_tw_mazut = 0.57;
-            const k_tw_gas = 0; // В природному газі немає твердих частинок
+            const Ar_coal = 25.20;
+            const a_vyn_coal = 0.80;
+            const q4_coal = 0.5;
+            const eta_zu_coal = 0.985;
+            const G_vyn_coal = 1.5;
+            
+            const Ar_mazut = 0.15;
+            const a_vyn_mazut = 1.00;
+            const q4_mazut = 0;
+            const eta_zu_mazut = 0.985;
+            const G_vyn_mazut = 0;
+            
+            const Ar_gas = 0;
+            const a_vyn_gas = 0;
+            const q4_gas = 0;
+            const eta_zu_gas = 1;
+            const G_vyn_gas = 0;
+            
+            let k_tw_coal = ((Ar_coal * a_vyn_coal) / (100 - q4_coal)) * (1 - eta_zu_coal) * (1 - (G_vyn_coal / 100)) * 1000;
+            let k_tw_mazut = ((Ar_mazut * a_vyn_mazut) / (100 - q4_mazut)) * (1 - eta_zu_mazut) * (1 - (G_vyn_mazut / 100)) * 1000;
+            let k_tw_gas = ((Ar_gas * a_vyn_gas) / (100 - q4_gas)) * (1 - eta_zu_gas) * (1 - (G_vyn_gas / 100)) * 1000;
             
             let E_coal = (k_tw_coal * coal * Qr_coal) / 1000000;
             let E_mazut = (k_tw_mazut * mazut * Qr_mazut) / 1000000;
@@ -38,6 +56,9 @@
             let totalEmissions = E_coal + E_mazut + E_gas;
             
             document.getElementById('results').innerHTML = `
+                Показник емісії (вугілля): ${k_tw_coal.toFixed(2)} г/ГДж <br>
+                Показник емісії (мазут): ${k_tw_mazut.toFixed(2)} г/ГДж <br>
+                Показник емісії (газ): ${k_tw_gas.toFixed(2)} г/ГДж <br>
                 Валовий викид (вугілля): ${E_coal.toFixed(2)} т <br>
                 Валовий викид (мазут): ${E_mazut.toFixed(2)} т <br>
                 Валовий викид (газ): ${E_gas.toFixed(2)} т <br>
