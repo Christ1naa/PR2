@@ -20,8 +20,8 @@
             <option value="gas">Природний газ</option>
         </select>
         <br>
-        <label>Теплота згоряння палива (Q<sub>i</sub>), ГДж:</label>
-        <input type="number" id="Qi" step="0.01">
+        <label>Обсяг палива (Q<sub>B</sub>), ТДж:</label>
+        <input type="number" id="Qb" step="0.01">
         <br>
         <button onclick="calculateEmissions()">Розрахувати</button>
         <h3>Результати:</h3>
@@ -31,15 +31,15 @@
     <script>
         function calculateEmissions() {
             let fuelType = document.getElementById("fuelType").value;
-            let Qi = parseFloat(document.getElementById("Qi").value);
+            let Qb = parseFloat(document.getElementById("Qb").value);
             let emissionFactor, totalEmissions;
 
             if (fuelType === "coal") {
                 emissionFactor = 150; // г/ГДж
-                totalEmissions = emissionFactor * Qi * 10**-6;
+                totalEmissions = 10**-6 * emissionFactor * Qb * 10**6; // т
             } else if (fuelType === "mazut") {
                 emissionFactor = 0.57; // г/ГДж
-                totalEmissions = emissionFactor * Qi * 10**-6;
+                totalEmissions = 10**-6 * emissionFactor * Qb * 10**6; // т
             } else {
                 emissionFactor = 0; // Для природного газу викиди відсутні
                 totalEmissions = 0;
