@@ -1,53 +1,50 @@
-<!DOCTYPE html>
-<html lang="uk">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Калькулятор викидів</title>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
-        .container { max-width: 600px; margin: auto; }
-        input, select, button { margin: 10px; padding: 5px; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h2>Калькулятор викидів твердих частинок</h2>
-        <label>Тип палива:</label>
-        <select id="fuelType">
-            <option value="coal">Вугілля</option>
-            <option value="mazut">Мазут</option>
-            <option value="gas">Природний газ</option>
-        </select>
-        <br>
-        <label>Обсяг палива (Q<sub>B</sub>), ТДж:</label>
-        <input type="number" id="Qb" step="0.01">
-        <br>
-        <button onclick="calculateEmissions()">Розрахувати</button>
-        <h3>Результати:</h3>
-        <p id="result"></p>
+import React, { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+
+export default function EmissionsCalculator() {
+  const [coal, setCoal] = useState(1096363);
+  const [oil, setOil] = useState(70945);
+  const [gas, setGas] = useState(84762);
+  const [results, setResults] = useState(null);
+
+  const calculateEmissions = () => {
+    const QrCoal = 20.47; // MJ/kg
+    const ArCoal = 25.2; // %
+    const etaZu = 0.985; // Efficiency
+    const kTvCoal = (ArCoal * 150) / (QrCoal * (1 - etaZu));
+    const ECoal = (kTvCoal * coal * QrCoal) / 1e6;
+
+    const QrOil = 40.40; // MJ/kg
+    const ArOil = 0.15; // %
+    const kTvOil = (ArOil * 150) / (QrOil * (1 - etaZu));
+    const EOil = (kTvOil * oil * QrOil) / 1e6;
+
+    setResults({
+      coal: { kTv: kTvCoal.toFixed(2), emission: ECoal.toFixed(2) },
+      oil: { kTv: kTvOil.toFixed(2), emission: EOil.toFixed(2) },
+      gas: { kTv: 0, emission: 0 },
+    });
+  };
+
+  return (
+    <div className="p-6 max-w-lg mx-auto">
+      <h1 className="text-xl font-bold mb-4">Веб-калькулятор викидів</h1>
+      <Card className="p-4 space-y-3">
+        <Input type="number" value={coal} onChange={(e) => setCoal(e.target.value)} placeholder="Вугілля, т" />
+        <Input type="number" value={oil} onChange={(e) => setOil(e.target.value)} placeholder="Мазут, т" />
+        <Input type="number" value={gas} onChange={(e) => setGas(e.target.value)} placeholder="Природний газ, тис. м³" />
+        <Button onClick={calculateEmissions}>Розрахувати</Button>
+      </Card>
+      {results && (
+        <Card className="mt-4 p-4">
+          <h2 className="text-lg font-bold">Результати</h2>
+          <p>Викиди вугілля: {results.coal.emission} т</p>
+          <p>Викиди мазуту: {results.oil.emission} т</p>
+          <p>Викиди газу: {results.gas.emission} т</p>
+        </Card>
+      )}
     </div>
-
-    <script>
-        function calculateEmissions() {
-            let fuelType = document.getElementById("fuelType").value;
-            let Qb = parseFloat(document.getElementById("Qb").value);
-            let emissionFactor, totalEmissions;
-
-            if (fuelType === "coal") {
-                emissionFactor = 150; // г/ГДж
-                totalEmissions = 10**-6 * emissionFactor * Qb * 10**6; // т
-            } else if (fuelType === "mazut") {
-                emissionFactor = 0.57; // г/ГДж
-                totalEmissions = 10**-6 * emissionFactor * Qb * 10**6; // т
-            } else {
-                emissionFactor = 0; // Для природного газу викиди відсутні
-                totalEmissions = 0;
-            }
-
-            document.getElementById("result").innerHTML = 
-                `Показник емісії: ${emissionFactor} г/ГДж <br> Валовий викид: ${totalEmissions.toFixed(2)} т`;
-        }
-    </script>
-</body>
-</html>
+  );
+}
