@@ -1,12 +1,9 @@
 import React, { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 
 export default function EmissionsCalculator() {
-  const [coal, setCoal] = useState(1096363);
-  const [oil, setOil] = useState(70945);
-  const [gas, setGas] = useState(84762);
+  const [coal, setCoal] = useState("");
+  const [oil, setOil] = useState("");
+  const [gas, setGas] = useState("");
   const [results, setResults] = useState(null);
 
   const calculateEmissions = () => {
@@ -29,21 +26,27 @@ export default function EmissionsCalculator() {
   };
 
   return (
-    <div className="p-6 max-w-lg mx-auto">
-      <h1 className="text-xl font-bold mb-4">Веб-калькулятор викидів</h1>
-      <Card className="p-4 space-y-3">
-        <Input type="number" value={coal} onChange={(e) => setCoal(e.target.value)} placeholder="Вугілля, т" />
-        <Input type="number" value={oil} onChange={(e) => setOil(e.target.value)} placeholder="Мазут, т" />
-        <Input type="number" value={gas} onChange={(e) => setGas(e.target.value)} placeholder="Природний газ, тис. м³" />
-        <Button onClick={calculateEmissions}>Розрахувати</Button>
-      </Card>
+    <div className="p-6 max-w-lg mx-auto bg-gray-100 rounded-lg shadow-md">
+      <h1 className="text-2xl font-bold mb-4 text-center">Калькулятор валових викидів</h1>
+      <div className="space-y-3">
+        <label className="block font-semibold">Вугілля (т):</label>
+        <input type="number" value={coal} onChange={(e) => setCoal(e.target.value)} className="w-full p-2 border rounded" placeholder="Введіть кількість" />
+        
+        <label className="block font-semibold">Мазут (т):</label>
+        <input type="number" value={oil} onChange={(e) => setOil(e.target.value)} className="w-full p-2 border rounded" placeholder="Введіть кількість" />
+        
+        <label className="block font-semibold">Природний газ (м³):</label>
+        <input type="number" value={gas} onChange={(e) => setGas(e.target.value)} className="w-full p-2 border rounded" placeholder="Введіть кількість" />
+        
+        <button onClick={calculateEmissions} className="w-full p-2 mt-3 bg-gray-300 rounded hover:bg-gray-400">Розрахувати</button>
+      </div>
       {results && (
-        <Card className="mt-4 p-4">
-          <h2 className="text-lg font-bold">Результати</h2>
+        <div className="mt-4 p-4 bg-white rounded shadow">
+          <h2 className="text-lg font-bold">Результати:</h2>
           <p>Викиди вугілля: {results.coal.emission} т</p>
           <p>Викиди мазуту: {results.oil.emission} т</p>
           <p>Викиди газу: {results.gas.emission} т</p>
-        </Card>
+        </div>
       )}
     </div>
   );
