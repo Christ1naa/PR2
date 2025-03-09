@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор викидів</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        .container { max-width: 600px; margin: auto; }
+        input, select, button { margin: 10px; padding: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Калькулятор викидів твердих частинок</h2>
+        <label>Тип палива:</label>
+        <select id="fuelType">
+            <option value="coal">Вугілля</option>
+            <option value="mazut">Мазут</option>
+            <option value="gas">Природний газ</option>
+        </select>
+        <br>
+        <label>Теплота згоряння палива (Q<sub>i</sub>), ГДж:</label>
+        <input type="number" id="Qi" step="0.01">
+        <br>
+        <button onclick="calculateEmissions()">Розрахувати</button>
+        <h3>Результати:</h3>
+        <p id="result"></p>
+    </div>
+
+    <script>
+        function calculateEmissions() {
+            let fuelType = document.getElementById("fuelType").value;
+            let Qi = parseFloat(document.getElementById("Qi").value);
+            let emissionFactor, totalEmissions;
+
+            if (fuelType === "coal") {
+                emissionFactor = 150; // г/ГДж
+                totalEmissions = emissionFactor * Qi * 10**-6;
+            } else if (fuelType === "mazut") {
+                emissionFactor = 0.57; // г/ГДж
+                totalEmissions = emissionFactor * Qi * 10**-6;
+            } else {
+                emissionFactor = 0; // Для природного газу викиди відсутні
+                totalEmissions = 0;
+            }
+
+            document.getElementById("result").innerHTML = 
+                `Показник емісії: ${emissionFactor} г/ГДж <br> Валовий викид: ${totalEmissions.toFixed(2)} т`;
+        }
+    </script>
+</body>
+</html>
