@@ -1,53 +1,49 @@
-import React, { useState } from "react";
-
-export default function EmissionsCalculator() {
-  const [coal, setCoal] = useState("");
-  const [oil, setOil] = useState("");
-  const [gas, setGas] = useState("");
-  const [results, setResults] = useState(null);
-
-  const calculateEmissions = () => {
-    const QrCoal = 20.47; // MJ/kg
-    const ArCoal = 25.2; // %
-    const etaZu = 0.985; // Efficiency
-    const kTvCoal = (ArCoal * 150) / (QrCoal * (1 - etaZu));
-    const ECoal = (kTvCoal * coal * QrCoal) / 1e6;
-
-    const QrOil = 40.40; // MJ/kg
-    const ArOil = 0.15; // %
-    const kTvOil = (ArOil * 150) / (QrOil * (1 - etaZu));
-    const EOil = (kTvOil * oil * QrOil) / 1e6;
-
-    setResults({
-      coal: { kTv: kTvCoal.toFixed(2), emission: ECoal.toFixed(2) },
-      oil: { kTv: kTvOil.toFixed(2), emission: EOil.toFixed(2) },
-      gas: { kTv: 0, emission: 0 },
-    });
-  };
-
-  return (
-    <div className="p-6 max-w-lg mx-auto bg-gray-100 rounded-lg shadow-md">
-      <h1 className="text-2xl font-bold mb-4 text-center">Калькулятор валових викидів</h1>
-      <div className="space-y-3">
-        <label className="block font-semibold">Вугілля (т):</label>
-        <input type="number" value={coal} onChange={(e) => setCoal(e.target.value)} className="w-full p-2 border rounded" placeholder="Введіть кількість" />
-        
-        <label className="block font-semibold">Мазут (т):</label>
-        <input type="number" value={oil} onChange={(e) => setOil(e.target.value)} className="w-full p-2 border rounded" placeholder="Введіть кількість" />
-        
-        <label className="block font-semibold">Природний газ (м³):</label>
-        <input type="number" value={gas} onChange={(e) => setGas(e.target.value)} className="w-full p-2 border rounded" placeholder="Введіть кількість" />
-        
-        <button onClick={calculateEmissions} className="w-full p-2 mt-3 bg-gray-300 rounded hover:bg-gray-400">Розрахувати</button>
-      </div>
-      {results && (
-        <div className="mt-4 p-4 bg-white rounded shadow">
-          <h2 className="text-lg font-bold">Результати:</h2>
-          <p>Викиди вугілля: {results.coal.emission} т</p>
-          <p>Викиди мазуту: {results.oil.emission} т</p>
-          <p>Викиди газу: {results.gas.emission} т</p>
-        </div>
-      )}
-    </div>
-  );
-}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор валових викидів</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        label, input, button { display: block; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h2>Калькулятор валових викидів шкідливих речовин</h2>
+    <label>Витрата вугілля (т): <input type="number" id="coal" value="1096363"></label>
+    <label>Витрата мазуту (т): <input type="number" id="mazut" value="70945"></label>
+    <label>Витрата природного газу (м3): <input type="number" id="gas" value="84762000"></label>
+    <button onclick="calculateEmissions()">Розрахувати</button>
+    <h3>Результати:</h3>
+    <p id="results"></p>
+    <script>
+        function calculateEmissions() {
+            let coal = parseFloat(document.getElementById('coal').value);
+            let mazut = parseFloat(document.getElementById('mazut').value);
+            let gas = parseFloat(document.getElementById('gas').value);
+            
+            const Qr_coal = 20.47;
+            const Qr_mazut = 40.40;
+            const Qr_gas = 33.08;
+            
+            const k_tw_coal = 150;
+            const k_tw_mazut = 0.57;
+            const k_tw_gas = 0; // В природному газі немає твердих частинок
+            
+            let E_coal = (k_tw_coal * coal * Qr_coal) / 1000000;
+            let E_mazut = (k_tw_mazut * mazut * Qr_mazut) / 1000000;
+            let E_gas = (k_tw_gas * gas * Qr_gas) / 1000000;
+            
+            let totalEmissions = E_coal + E_mazut + E_gas;
+            
+            document.getElementById('results').innerHTML = `
+                Валовий викид (вугілля): ${E_coal.toFixed(2)} т <br>
+                Валовий викид (мазут): ${E_mazut.toFixed(2)} т <br>
+                Валовий викид (газ): ${E_gas.toFixed(2)} т <br>
+                <strong>Загальний викид:</strong> ${totalEmissions.toFixed(2)} т
+            `;
+        }
+    </script>
+</body>
+</html>
