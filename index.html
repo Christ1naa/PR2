@@ -29,18 +29,19 @@
             
             const Ar_coal = 25.20;
             const Ar_mazut = 0.15;
+            const G_vyn = 0;
             const a_vyn_coal = 0.80;
             const a_vyn_mazut = 1.00;
-            const q4_coal = 0.5;
             const eta_zu = 0.985;
+            const k_tw_bs = 0; // базовий показник емісії (можна змінити за потреби)
             
-            let k_tw_coal = ((Ar_coal * a_vyn_coal * (100 - q4_coal)) / 100) * (1000 / Qr_coal) * (1 - eta_zu);
-            let k_tw_mazut = ((Ar_mazut * a_vyn_mazut) / 100) * (1000 / Qr_mazut) * (1 - eta_zu);
+            let k_tw_coal = ((1e6 / Qr_coal) * a_vyn_coal * (Ar_coal / (100 - G_vyn)) * (1 - eta_zu)) + k_tw_bs;
+            let k_tw_mazut = ((1e6 / Qr_mazut) * a_vyn_mazut * (Ar_mazut / (100 - G_vyn)) * (1 - eta_zu)) + k_tw_bs;
             let k_tw_gas = 0; 
             
-            let E_coal = (k_tw_coal * coal * Qr_coal) / 1000000;
-            let E_mazut = (k_tw_mazut * mazut * Qr_mazut) / 1000000;
-            let E_gas = (k_tw_gas * gas * Qr_gas) / 1000000;
+            let E_coal = (k_tw_coal * coal * Qr_coal) / 1e6;
+            let E_mazut = (k_tw_mazut * mazut * Qr_mazut) / 1e6;
+            let E_gas = (k_tw_gas * gas * Qr_gas) / 1e6;
             
             let totalEmissions = E_coal + E_mazut + E_gas;
             
